@@ -7,8 +7,10 @@ class TVShowDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var summary = tvObj["show"]["summary"]
-        .replaceAll(new RegExp(r'<p>|</p>|<b>|</b>'), '');
+     
+    var summary = tvObj["show"]["summary"]?? '';
+    summary = summary.replaceAll(new RegExp(r'<p>|</p>|<b>|</b>'),'');
+        
 
     return new Scaffold(
         appBar: AppBar(
