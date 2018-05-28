@@ -4,6 +4,8 @@ A Flutter code example,
 this example doing an app which has a textInput to put some key words to retrieve data from [TVMaze](http://www.tvmaze.com/api), generate a List of cards,
 every card is clickable to see more information about the tv show. 
 
+![display_gif](https://raw.githubusercontent.com/akari0624/FlutterExampleApp/master/display_20180528001.gif)
+
 # flutter/DART learning resource:
 
 ## API document
@@ -26,3 +28,7 @@ showing some advanced concept
 [Flutter Getting Started: Can You Build iOS Android Apps with One Language?](https://www.youtube.com/watch?v=0gA6o6YWheo)
 
 [Complete Guide to Flutter: How to Build a Real World App](https://www.youtube.com/watch?v=S59b-XFsyY8&t=950s)
+
+
+## Offical example
+[offical example on Github](https://github.com/flutter/flutter/tree/master/examples)
