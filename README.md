@@ -11,6 +11,9 @@ every card is clickable to see more information about the tv show.
 ## API document
 [offical flutter documentation](https://flutter.io/)
 
+## flutter cookbook
+[cookbook - lots good practice code example in many secenario](https://flutter.io/cookbook/)
+
 ## some video from Google I/O 2018
 [Build reactive mobile apps with Flutter](https://www.youtube.com/watch?v=RS36gBEp8OI&t=848s)
 showing some advanced concept

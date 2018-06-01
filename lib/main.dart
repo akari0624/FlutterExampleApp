@@ -3,6 +3,8 @@ import "package:http/http.dart" as http;
 import "dart:convert";
 import "./TVShowCard.dart";
 import "./TVShowDetailPage.dart";
+import './TVShowProvider.dart';
+import './TVShowBloc.dart';
 
 void main() => runApp(new MyApp());
 
@@ -10,65 +12,50 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
-        // counter didn't reset back to zero; the application is not restarted.
+    return new TVShowProvider(
+          child: new MaterialApp(
+        title: 'Flutter Demo',
+        theme: new ThemeData(
         primarySwatch: Colors.blue,
+        ),
+        home: new MyHomePage(title:'TV maze Queryable'),
       ),
-      home: new MyHomePage(title: 'TV maze Queryable'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+class MyHomePage extends StatelessWidget {
+ // MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
-  @override
-  _MyHomePageState createState() => new _MyHomePageState();
-}
+MyHomePage({this.title:'my app'});
 
-class _MyHomePageState extends State<MyHomePage> {
-  var _isLoading = false;
+ // var _isLoading = false;
 
-  var _tvProgrameData = List<dynamic>();
 
-  void fetchData(String text) async {
+  void fetchData(String text, TVShowBloc tvShowBloc) async {
     var url = "http://api.tvmaze.com/search/shows?q=$text";
 
-    setState(() {
-      _isLoading = true;
-    });
+     tvShowBloc.pipeIsLoading.add(true);
 
     final response = await http.get(url);
 
+
     if (response.statusCode == 200) {
-      setState(() {
-        _tvProgrameData = json.decode(response.body);
-      });
+  
+    final _tvProgrameData = json.decode(response.body);
+       
+
+      tvShowBloc.pipeToSink.add(_tvProgrameData);
+
+       tvShowBloc.pipeIsLoading.add(false);
+
     }
 
-    setState(() {
-      _isLoading = false;
-    });
+    // setState(() {
+    //   _isLoading = false;
+    // });
   }
 
   Widget renderItem(dynamic tvObj, BuildContext cxt) {
@@ -85,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
     
   }
 
- Widget renderSerachableCondition(dataArr){
+ Widget renderSerachableCondition(TVShowBloc bloc){
 
       ListView renderTVProgrameList(dataArr) {
           return ListView.builder(
@@ -94,33 +81,38 @@ class _MyHomePageState extends State<MyHomePage> {
               return renderItem(dataArr[i], context);
             },
           );
-        }
+      }
 
   return Container(
-
+    
     child: Column(
       
       children:<Widget>[
         TextField(onSubmitted:(text){
-           fetchData(text);
+           fetchData(text, bloc);
         }),
-        Expanded(child:renderTVProgrameList(dataArr))
+        Expanded(child:
+        StreamBuilder<List<dynamic>>(
+
+          stream:bloc.tvShowList,
+          initialData:[],
+          builder:(ctx,snapshot) => renderTVProgrameList(snapshot.data),
+        ),
+        ),
         ]
     ),
   );
 
  }
 
-
  
 
   @override
   Widget build(BuildContext context) {
+    final tvShowBloc = TVShowProvider.of(context);
     return new Scaffold(
       appBar: new AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: new Text(widget.title),
+       title: new Text(this.title),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.refresh),
@@ -128,16 +120,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   print("reloading....");
                 })
           ]),
-      body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : renderSerachableCondition(_tvProgrameData),
-      // floatingActionButton: new FloatingActionButton(
-      //   onPressed: (){fetchData("batman");},
-      //   tooltip: 'Increment', 
-      //   child: new Icon(Icons.add),
-      // ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+       body: StreamBuilder<bool>(
+         stream:tvShowBloc.isLoading,
+          initialData:false,
+          builder:(ctx,snapshot) => snapshot.data ? Center(child:CircularProgressIndicator()) : renderSerachableCondition(tvShowBloc) 
+       )
+     
+     );
   }
+
 }

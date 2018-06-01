@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 class TVShowDetailPage extends StatelessWidget {
   final dynamic tvObj;
 
-  TVShowDetailPage(this.tvObj);
+  const TVShowDetailPage(this.tvObj);
 
   @override
   Widget build(BuildContext context) {
