@@ -25,13 +25,10 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
- // MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
 MyHomePage({this.title:'my app'});
-
- // var _isLoading = false;
 
 
   void fetchData(String text, TVShowBloc tvShowBloc) async {
@@ -53,9 +50,6 @@ MyHomePage({this.title:'my app'});
 
     }
 
-    // setState(() {
-    //   _isLoading = false;
-    // });
   }
 
   Widget renderItem(dynamic tvObj, BuildContext cxt) {
