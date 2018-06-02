@@ -14,7 +14,11 @@ BehaviorSubject<bool> _isLoading = BehaviorSubject<bool>(seedValue:false);
 final _isLoadingController = StreamController<bool>();
 Stream<bool> get isLoading => _isLoading.stream;
 Sink<bool> get pipeIsLoading => _isLoadingController.sink;
-  
+
+BehaviorSubject<String> _searchTerm = BehaviorSubject<String>(seedValue:'');
+final _searchTermController = StreamController<String>();
+Stream<String> get searchTerm => _searchTerm.stream;
+Sink<String> get pipeSearchTerm => _searchTermController.sink;  
   
   TVShowBloc() {
 
@@ -29,6 +33,11 @@ Sink<bool> get pipeIsLoading => _isLoadingController.sink;
 
        _isLoading.add(isLoading);
     });
+
+    _searchTermController.stream.listen((searchTerm){_searchTerm.add(searchTerm)
+    
+    ;});
+
     }
 
 
@@ -38,7 +47,12 @@ void dispose(){
 
   _isLoading.close();
   _isLoadingController.close();
+
+  _searchTerm.close();
+  _searchTermController.close();
+
 }
+
 
 
   }

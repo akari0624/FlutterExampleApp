@@ -35,7 +35,8 @@ MyHomePage({this.title:'my app'});
     var url = "http://api.tvmaze.com/search/shows?q=$text";
 
      tvShowBloc.pipeIsLoading.add(true);
-
+     tvShowBloc.pipeSearchTerm.add(text);
+    
     final response = await http.get(url);
 
 
@@ -82,9 +83,21 @@ MyHomePage({this.title:'my app'});
     child: Column(
       
       children:<Widget>[
-        TextField(onSubmitted:(text){
-           fetchData(text, bloc);
-        }),
+        
+          StreamBuilder<String>(
+            stream:bloc.searchTerm,
+            initialData: '',
+            builder:(ctx, snapshot){
+                return TextField(
+                   controller: TextEditingController(text:snapshot.data),
+                   onSubmitted:(text){
+                   fetchData(text, bloc);
+                   }
+                );
+            },
+          ),
+          
+         
         Expanded(child:
         StreamBuilder<List<dynamic>>(
 
